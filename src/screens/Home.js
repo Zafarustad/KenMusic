@@ -6,9 +6,11 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
-  TouchableOpacity,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import AlbumCard from '../components/AlbumCard';
+import Error from '../components/Error';
+import Loader from '../components/Loader';
 import {fetchAlbums} from '../reducers/albumSlice';
 
 const {width, height} = Dimensions.get('window');
@@ -21,20 +23,7 @@ const Home = () => {
     dispatch(fetchAlbums(offset));
   }, []);
 
-  const renderItem = ({item, index}) => (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      style={{
-        width: width * 0.9,
-        padding: 10,
-        borderBottomColor: '#8D8D8D',
-        borderBottomWidth: index !== albums.length - 1 ? 0.5 : 0,
-      }}>
-      <Text style={styles.listText}>{item.artistName}</Text>
-      <Text style={styles.listText}>{item.originallyReleased}</Text>
-      <Text style={styles.listText}>{item.trackCount}</Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({item, index}) => <AlbumCard item={item} index={index} />;
 
   return albums ? (
     <View style={styles.container}>
@@ -60,22 +49,10 @@ const Home = () => {
         }}
       />
     </View>
-  ) : !albums ? (
-    <View
-      style={[
-        styles.container,
-        {justifyContent: 'center', alignItems: 'center'},
-      ]}>
-      <ActivityIndicator color="#1ED760" size={50} animating={true} />
-    </View>
+  ) : !albums && !error ? (
+    <Loader />
   ) : error ? (
-    <View
-      style={[
-        styles.container,
-        {justifyContent: 'center', alignItems: 'center'},
-      ]}>
-      <Text style={{color: 'red'}}>Something went wrong!</Text>
-    </View>
+    <Error />
   ) : null;
 };
 
@@ -97,5 +74,10 @@ const styles = StyleSheet.create({
   listText: {
     color: '#FFFFFF',
     marginVertical: 5,
+  },
+  albumCard: {
+    width: width * 0.9,
+    padding: 10,
+    borderBottomColor: '#8D8D8D',
   },
 });
