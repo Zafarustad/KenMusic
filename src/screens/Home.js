@@ -14,11 +14,11 @@ import {fetchAlbums} from '../reducers/albumSlice';
 const {width, height} = Dimensions.get('window');
 
 const Home = () => {
-  const {albums, error} = useSelector(state => state.albums);
+  const {albums, error, offset} = useSelector(state => state.albums);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAlbums());
+    dispatch(fetchAlbums(offset));
   }, []);
 
   const renderItem = ({item, index}) => (
@@ -40,15 +40,24 @@ const Home = () => {
     <View style={styles.container}>
       <FlatList
         data={albums}
-        keyExtractor={item => item.originallyReleased}
+        keyExtractor={item => item.id}
         removeClippedSubviews={true}
         renderItem={renderItem}
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         ListHeaderComponent={<Text style={styles.header}>KenMusic</Text>}
         ListFooterComponent={
-          <ActivityIndicator color="#1ED760" size={50} animating={true} />
+          <ActivityIndicator
+            color="#1ED760"
+            size={50}
+            animating={true}
+            style={{paddingVertical: 5}}
+          />
         }
         showsVerticalScrollIndicator={false}
+        onEndReachedThreshold={0.6}
+        onEndReached={() => {
+          dispatch(fetchAlbums(offset));
+        }}
       />
     </View>
   ) : !albums ? (

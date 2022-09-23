@@ -6,7 +6,7 @@ const initialState = {
   albums: null,
   loading: false,
   error: null,
-  page: 1,
+  offset: 0,
 };
 
 export const albumSlice = createSlice({
@@ -20,11 +20,10 @@ export const albumSlice = createSlice({
     builder.addCase(fetchAlbums.fulfilled, (state, {payload}) => {
       if (state.albums && state.albums.length > 0) {
         state.albums.push(...payload);
-        state.page += 1;
       } else {
         state.albums = payload;
-        state.page += 1;
       }
+      state.offset += 20;
       state.loading = false;
     });
     builder.addCase(fetchAlbums.rejected, (state, {error}) => {
@@ -38,10 +37,10 @@ export default albumSlice.reducer;
 
 export const fetchAlbums = createAsyncThunk(
   'albums/fetchAlbums',
-  async (_, {rejectWithValue}) => {
+  async (offset, {rejectWithValue}) => {
     try {
       const response = await axiosInstance.get(
-        `albums/top?apikey=${Config.NAPSTER_API_KEY}`,
+        `albums/top?apikey=${Config.NAPSTER_API_KEY}&limit=20&offset=${offset}`,
       );
       return await response.data.albums;
     } catch (error) {
