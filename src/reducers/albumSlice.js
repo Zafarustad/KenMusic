@@ -4,7 +4,6 @@ import Config from 'react-native-config';
 
 const initialState = {
   albums: null,
-  loading: false,
   error: null,
   offset: 0,
 };
@@ -14,9 +13,6 @@ export const albumSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchAlbums.pending, state => {
-      state.loading = true;
-    });
     builder.addCase(fetchAlbums.fulfilled, (state, {payload}) => {
       if (state.albums && state.albums.length > 0) {
         state.albums.push(...payload);
@@ -24,11 +20,9 @@ export const albumSlice = createSlice({
         state.albums = payload;
       }
       state.offset += 20;
-      state.loading = false;
     });
     builder.addCase(fetchAlbums.rejected, (state, {error}) => {
       state.error = error.message;
-      state.loading = false;
     });
   },
 });

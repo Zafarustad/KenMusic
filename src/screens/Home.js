@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -12,8 +11,7 @@ import AlbumCard from '../components/AlbumCard';
 import Error from '../components/Error';
 import Loader from '../components/Loader';
 import {fetchAlbums} from '../reducers/albumSlice';
-
-const {width, height} = Dimensions.get('window');
+import {windowHeight, windowWidth} from '../utils/responsive';
 
 const Home = () => {
   const {albums, error, offset} = useSelector(state => state.albums);
@@ -60,8 +58,8 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: height,
+    width: windowWidth,
+    height: windowHeight,
     backgroundColor: '#1C1B1B',
   },
   header: {
@@ -70,14 +68,5 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     marginVertical: 20,
-  },
-  listText: {
-    color: '#FFFFFF',
-    marginVertical: 5,
-  },
-  albumCard: {
-    width: width * 0.9,
-    padding: 10,
-    borderBottomColor: '#8D8D8D',
   },
 });

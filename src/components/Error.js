@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-
-const {width, height} = Dimensions.get('window');
+import {View, StyleSheet} from 'react-native';
+import {windowHeight, windowWidth} from '../utils/responsive';
 
 const Error = () => (
   <View style={styles.container}>
@@ -13,8 +12,7 @@ export default Error;
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: height,
+    flex: 1,
     backgroundColor: '#1C1B1B',
     justifyContent: 'center',
     alignItems: 'center',

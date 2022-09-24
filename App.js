@@ -7,7 +7,7 @@ import Router from './src/router/Router';
 const App = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer theme={{colors: {background: '#1C1B1B'}}}>
         <Router />
       </NavigationContainer>
     </Provider>
