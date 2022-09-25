@@ -18,7 +18,15 @@ export const detailsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchAlbumDetails.fulfilled, (state, {payload}) => {
-      state.tracks = payload;
+      let tracks = payload.map(track => ({
+        ...track,
+        url: track.previewURL,
+        title: track.name,
+        artist: track.artistName,
+        album: track.albumName,
+        duration: track.playbackSeconds,
+      }));
+      state.tracks = tracks;
     });
     builder.addCase(fetchAlbumDetails.rejected, (state, {error}) => {
       state.error = error.message;

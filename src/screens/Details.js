@@ -1,19 +1,13 @@
-import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  FlatList,
-} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, Image, FlatList} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 import {windowWidth, windowHeight} from '../utils/responsive';
 import {fetchAlbumDetails} from '../reducers/detailSlice';
 import Loader from '../components/Loader';
 import {clearTracks} from '../reducers/detailSlice';
-import PlayIcon from '../assests/play.png';
+import TrackCard from '../components/TrackCard';
+import TrackPlayer, {Capability} from 'react-native-track-player';
 
 const Details = () => {
   const {tracks, error} = useSelector(state => state.details);
@@ -24,57 +18,50 @@ const Details = () => {
 
   useEffect(() => {
     dispatch(fetchAlbumDetails(id));
-
+    setupTrackPlayer();
     return () => {
       dispatch(clearTracks());
+      TrackPlayer.reset();
     };
   }, []);
 
-  console.log(tracks);
+  const setupTrackPlayer = async () => {
+    try {
+      await TrackPlayer.setupPlayer();
+      TrackPlayer.updateOptions({
+        stoppingAppPausesPlayback: false,
+        capabilities: [Capability.Play, Capability.Pause, Capability.Stop],
+        compactCapabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.Stop,
+        ],
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onPlayPreview = async id => {
+    try {
+      const track = await tracks.filter(track => track.id === id);
+      await TrackPlayer.reset();
+      await TrackPlayer.add(track);
+      await TrackPlayer.play();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onTrackSelect = async () => {
+    try {
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const renderItem = ({item, index}) => (
-    <TouchableOpacity
-      style={[
-        styles.trackCard,
-        {borderBottomWidth: index !== tracks.length - 1 ? 0.5 : 0},
-      ]}
-      activeOpacity={0.5}>
-      <View style={{flexDirection: 'row', flex: 1, marginTop: 5}}>
-        <View
-          style={{
-            width: 40,
-            height: 40,
-            backgroundColor: '#2C2C2C',
-            borderRadius: 100,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Image source={PlayIcon} />
-        </View>
-        <View style={{marginLeft: 10}}>
-          <Text style={styles.listText}>{item.name}</Text>
-          <Text style={styles.listText}>
-            {Math.ceil(item.playbackSeconds / 60)} mins
-          </Text>
-          <Text style={[styles.listText, {color: '#8D8D8D'}]}>
-            Artist: {item.artistName}
-          </Text>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 5,
-              marginTop: 10,
-              width: 120,
-              position: 'relative',
-              zIndex: 1,
-              backgroundColor: '#2C2C2C',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>Play Preview</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <TrackCard index={index} item={item} onPlayPreview={onPlayPreview} />
   );
 
   return (
@@ -132,20 +119,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
   },
-
   trackTxt: {
     color: '#FFFFFF',
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-  },
-  trackCard: {
-    width: windowWidth * 0.9,
-    paddingVertical: 15,
-    borderBottomColor: '#8D8D8D',
-  },
-  listText: {
-    color: '#FFFFFF',
-    marginVertical: 2,
   },
 });
