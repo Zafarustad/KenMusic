@@ -3,15 +3,15 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {windowWidth} from '../utils/responsive';
-import PlayIcon from '../assests/play.png';
-import TrackPlayer from 'react-native-track-player';
+import {Play} from 'react-native-feather';
 
-const TrackCard = ({item, index, onPlayPreview}) => {
+const TrackCard = ({item, index, onPlayPreview, onTrackSelect}) => {
   const {tracks} = useSelector(state => state.details);
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
+      onPress={() => onTrackSelect(item.id)}
       style={[
         styles.trackCard,
         {borderBottomWidth: index !== tracks.length - 1 ? 0.5 : 0},
@@ -19,7 +19,7 @@ const TrackCard = ({item, index, onPlayPreview}) => {
       activeOpacity={0.5}>
       <View style={{flexDirection: 'row', flex: 1, marginTop: 5}}>
         <View style={styles.icon}>
-          <Image source={PlayIcon} />
+          <Play fill="#1C1B1B" stroke="#FFFFFF" width={15} height={15} />
         </View>
         <View style={{marginLeft: 10}}>
           <Text style={styles.listText}>{item.name}</Text>

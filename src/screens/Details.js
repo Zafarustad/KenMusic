@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, FlatList} from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
+import TrackPlayer, {Capability} from 'react-native-track-player';
 import {windowWidth, windowHeight} from '../utils/responsive';
 import {fetchAlbumDetails} from '../reducers/detailSlice';
 import Loader from '../components/Loader';
 import {clearTracks} from '../reducers/detailSlice';
 import TrackCard from '../components/TrackCard';
-import TrackPlayer, {Capability} from 'react-native-track-player';
+import {addTracks} from '../reducers/playerSlice';
 
 const Details = () => {
   const {tracks, error} = useSelector(state => state.details);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const route = useRoute();
   const id = route?.params?.id;
   const trackCount = route?.params?.trackCount;
@@ -53,15 +55,26 @@ const Details = () => {
     }
   };
 
-  const onTrackSelect = async () => {
-    try {
-    } catch (err) {
-      console.log(err);
-    }
+  const onTrackSelect = id => {
+    let playerTracks = tracks.map(track => ({
+      id: track.id,
+      url: track.previewURL,
+      title: track.name,
+      artist: track.artistName,
+      album: track.albumName,
+      duration: 30,
+    }));
+    dispatch(addTracks(playerTracks));
+    navigation.navigate('Player', {id});
   };
 
   const renderItem = ({item, index}) => (
-    <TrackCard index={index} item={item} onPlayPreview={onPlayPreview} />
+    <TrackCard
+      index={index}
+      item={item}
+      onPlayPreview={onPlayPreview}
+      onTrackSelect={onTrackSelect}
+    />
   );
 
   return (
