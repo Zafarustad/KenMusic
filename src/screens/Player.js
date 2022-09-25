@@ -1,13 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {windowHeight, windowWidth} from '../utils/responsive';
-import {useSelector, useDispatch} from 'react-redux';
-import TrackPlayer, {
-  State,
-  useProgress,
-  useTrackPlayerEvents,
-  Event,
-} from 'react-native-track-player';
+import {useSelector} from 'react-redux';
+import TrackPlayer, {State, useProgress} from 'react-native-track-player';
 import {useRoute} from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 import {
@@ -22,15 +17,13 @@ import {secondsToHHMMSS} from '../utils/function';
 const Player = () => {
   const [playing, setPlaying] = useState(false);
   const {tracks} = useSelector(state => state.player);
-  const {position, duration} = useProgress();
+  const {position} = useProgress();
   const route = useRoute();
   const id = route?.params?.id;
 
   useEffect(() => {
     startPlayback();
   }, []);
-
-  // useTrackPlayerEvents(Event.PlaybackTrackChanged, async () => {});
 
   const startPlayback = async () => {
     try {

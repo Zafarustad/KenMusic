@@ -20,29 +20,10 @@ const Details = () => {
 
   useEffect(() => {
     dispatch(fetchAlbumDetails(id));
-    setupTrackPlayer();
     return () => {
       dispatch(clearTracks());
-      TrackPlayer.reset();
     };
   }, []);
-
-  const setupTrackPlayer = async () => {
-    try {
-      await TrackPlayer.setupPlayer();
-      TrackPlayer.updateOptions({
-        stoppingAppPausesPlayback: false,
-        capabilities: [Capability.Play, Capability.Pause, Capability.Stop],
-        compactCapabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.Stop,
-        ],
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const onPlayPreview = async id => {
     try {
