@@ -58,7 +58,6 @@ const Details = () => {
       onTrackSelect={onTrackSelect}
     />
   );
-  console.log('error', tracks, error);
 
   return (
     <View style={styles.container}>
