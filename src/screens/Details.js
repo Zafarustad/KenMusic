@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, Image, FlatList} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -7,7 +7,7 @@ import {windowWidth, windowHeight} from '../utils/responsive';
 import {fetchAlbumDetails} from '../reducers/detailSlice';
 import Loader from '../components/Loader';
 import {clearTracks} from '../reducers/detailSlice';
-import TrackCard from '../components/TrackCard';
+import TrackCard from '../components/Details/TrackCard';
 import {addTracks} from '../reducers/playerSlice';
 import Error from '../components/Error';
 

@@ -7,7 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import AlbumCard from '../components/AlbumCard';
+import AlbumCard from '../components/Home/AlbumCard';
 import Error from '../components/Error';
 import Loader from '../components/Loader';
 import {fetchAlbums} from '../reducers/albumSlice';

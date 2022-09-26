@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useSelector} from 'react-redux';
-import {windowWidth} from '../utils/responsive';
+import { windowWidth } from '../../utils/responsive';
 import {useNavigation} from '@react-navigation/native';
 
 const months = [

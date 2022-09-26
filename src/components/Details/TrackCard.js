@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
-import {windowWidth} from '../utils/responsive';
+import {windowWidth} from '../../utils/responsive';
 import {Play} from 'react-native-feather';
 
 const TrackCard = ({item, index, onPlayPreview, onTrackSelect}) => {
   const {tracks} = useSelector(state => state.details);
-  const navigation = useNavigation();
 
   return (
     <TouchableOpacity
