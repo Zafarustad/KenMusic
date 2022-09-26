@@ -10,6 +10,7 @@ import {clearTracks} from '../reducers/detailSlice';
 import TrackCard from '../components/Details/TrackCard';
 import {addTracks} from '../reducers/playerSlice';
 import Error from '../components/Error';
+import BottomPlayer from '../components/BottomPlayer';
 
 const Details = () => {
   const {tracks, error} = useSelector(state => state.details);
@@ -86,6 +87,7 @@ const Details = () => {
           />
         )}
       </View>
+      <BottomPlayer />
     </View>
   );
 };

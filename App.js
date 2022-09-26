@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-redux';
 import {store} from './src/store/store';
 import Router from './src/router/Router';
+import {useSelector} from 'react-redux';
+import BottomPlayer from './src/components/BottomPlayer';
 
 const App = () => {
   return (

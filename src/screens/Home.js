@@ -16,6 +16,7 @@ import TrackPlayer, {
   Capability,
   AppKilledPlaybackBehavior,
 } from 'react-native-track-player';
+import BottomPlayer from '../components/BottomPlayer';
 
 const Home = () => {
   const {albums, error, offset} = useSelector(state => state.albums);
@@ -71,6 +72,7 @@ const Home = () => {
           dispatch(fetchAlbums(offset));
         }}
       />
+      <BottomPlayer />
     </View>
   ) : !albums && !error ? (
     <Loader />
