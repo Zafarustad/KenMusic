@@ -44,6 +44,7 @@ const Player = () => {
       await TrackPlayer.reset();
       await TrackPlayer.add(tracks);
       await TrackPlayer.skip(index, 0);
+      await TrackPlayer.setVolume(0.5);
       await TrackPlayer.play();
       setPlaying(true);
     } catch (err) {
@@ -68,8 +69,14 @@ const Player = () => {
         source={{
           uri: `https://api.napster.com/imageserver/v2/albums/${albumId}/images/500x500.jpg`,
         }}
+        resizeMode="contain"
         style={styles.cover}
       />
+      <Text style={{marginTop: 15, color: '#FFFFFF', fontSize: 15}}>
+        {tracks
+          .filter((_, idx) => idx === currentIdx)
+          .map(track => track.title)}
+      </Text>
       <View style={styles.progressBar}>
         <Text style={{textAlign: 'center'}}>
           {secondsToHHMMSS(Math.floor(position || 0))}
@@ -82,6 +89,7 @@ const Player = () => {
           maximumTrackTintColor="#FFFFFF"
           thumbTintColor="#1ED760"
           value={position}
+          onSlidingComplete={async (value) => await TrackPlayer.seekTo(value)}
         />
       </View>
       <View style={styles.controlsWrapper}>

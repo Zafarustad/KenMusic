@@ -14,7 +14,7 @@ import {fetchAlbums} from '../reducers/albumSlice';
 import {windowHeight, windowWidth} from '../utils/responsive';
 import TrackPlayer, {
   Capability,
-  usePlaybackState,
+  AppKilledPlaybackBehavior,
 } from 'react-native-track-player';
 
 const Home = () => {
@@ -30,13 +30,16 @@ const Home = () => {
     try {
       await TrackPlayer.setupPlayer();
       TrackPlayer.updateOptions({
-        stoppingAppPausesPlayback: true,
         capabilities: [Capability.Play, Capability.Pause, Capability.Stop],
         compactCapabilities: [
           Capability.Play,
           Capability.Pause,
           Capability.Stop,
         ],
+        android: {
+          appKilledPlaybackBehavior:
+            AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
+        },
       });
     } catch (err) {
       console.log(err);

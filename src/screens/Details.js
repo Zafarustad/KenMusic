@@ -62,6 +62,7 @@ const Details = () => {
   return (
     <View style={styles.container}>
       <Image
+        resizeMode="contain"
         source={{
           uri: `https://api.napster.com/imageserver/v2/albums/${id}/images/500x500.jpg`,
         }}
@@ -100,7 +101,6 @@ const styles = StyleSheet.create({
   cover: {
     width: windowWidth,
     height: windowHeight * 0.4,
-    resizeMode: 'contain',
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
   },
