@@ -1,6 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {windowHeight, windowWidth} from '../utils/responsive';
+import {View, StyleSheet, Text} from 'react-native';
 
 const Error = () => (
   <View style={styles.container}>

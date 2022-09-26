@@ -1,8 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {windowHeight, windowWidth} from '../utils/responsive';
 import {useSelector} from 'react-redux';
-import TrackPlayer, {State, useProgress} from 'react-native-track-player';
+import TrackPlayer, {
+  State,
+  useProgress,
+  useTrackPlayerEvents,
+  Event,
+} from 'react-native-track-player';
 import {useRoute} from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 import {
@@ -16,18 +21,26 @@ import {secondsToHHMMSS} from '../utils/function';
 
 const Player = () => {
   const [playing, setPlaying] = useState(false);
+  const [currentIdx, setCurrentIdx] = useState(0);
   const {tracks} = useSelector(state => state.player);
   const {position} = useProgress();
   const route = useRoute();
   const id = route?.params?.id;
+  const albumId = route?.params?.albumId;
 
   useEffect(() => {
     startPlayback();
   }, []);
 
+  useTrackPlayerEvents([Event.PlaybackTrackChanged], async () => {
+    const index = await TrackPlayer.getCurrentTrack();
+    setCurrentIdx(index);
+  });
+
   const startPlayback = async () => {
     try {
       const index = tracks.findIndex(track => track.id === id);
+      setCurrentIdx(index);
       await TrackPlayer.reset();
       await TrackPlayer.add(tracks);
       await TrackPlayer.skip(index, 0);
@@ -49,38 +62,40 @@ const Player = () => {
     }
   };
 
-  const playNextTrack = async () => {
-    const currIndex = await TrackPlayer.getCurrentTrack();
-    if (currIndex < tracks.length - 1) {
-      TrackPlayer.skipToNext();
-    }
-  };
-
-  const playPreTrack = async () => {
-    const currIndex = await TrackPlayer.getCurrentTrack();
-    if (currIndex > 0) {
-      TrackPlayer.skipToPrevious();
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Text>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
-      <Slider
-        style={{width: '70%', height: 40}}
-        minimumValue={0}
-        maximumValue={30}
-        minimumTrackTintColor="#DDDDDD"
-        maximumTrackTintColor="#FFFFFF"
-        thumbTintColor="#1ED760"
-        value={position}
+      <Image
+        source={{
+          uri: `https://api.napster.com/imageserver/v2/albums/${albumId}/images/500x500.jpg`,
+        }}
+        style={styles.cover}
       />
-      <View style={styles.wrapper}>
+      <View style={styles.progressBar}>
+        <Text style={{textAlign: 'center'}}>
+          {secondsToHHMMSS(Math.floor(position || 0))}
+        </Text>
+        <Slider
+          style={{width: '70%', height: 40}}
+          minimumValue={0}
+          maximumValue={30}
+          minimumTrackTintColor="#DDDDDD"
+          maximumTrackTintColor="#FFFFFF"
+          thumbTintColor="#1ED760"
+          value={position}
+        />
+      </View>
+      <View style={styles.controlsWrapper}>
         <TouchableOpacity
           style={styles.actions}
+          disabled={currentIdx === 0}
           activeOpacity={0.6}
-          onPress={playPreTrack}>
-          <SkipBack fill="#1C1B1B" stroke="#FFFFFF" width={20} height={20} />
+          onPress={async () => await TrackPlayer.skipToPrevious()}>
+          <SkipBack
+            fill="#1C1B1B"
+            stroke={currentIdx === 0 ? '#8D8D8D' : '#FFFFFF'}
+            width={20}
+            height={20}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actions}
@@ -94,9 +109,15 @@ const Player = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actions}
+          disabled={currentIdx === tracks.length - 1}
           activeOpacity={0.6}
-          onPress={playNextTrack}>
-          <SkipForward fill="#1C1B1B" stroke="#FFFFFF" width={20} height={20} />
+          onPress={async () => await TrackPlayer.skipToNext()}>
+          <SkipForward
+            fill="#1C1B1B"
+            stroke={currentIdx === tracks.length - 1 ? '#8D8D8D' : '#FFFFFF'}
+            width={20}
+            height={20}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={async () => {
@@ -121,11 +142,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  wrapper: {
+  cover: {
+    width: windowWidth * 0.6,
+    height: 300,
+    borderRadius: 7,
+  },
+  progressBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  controlsWrapper: {
     width: windowWidth * 0.9,
     padding: 15,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   actions: {

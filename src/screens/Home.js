@@ -12,7 +12,10 @@ import Error from '../components/Error';
 import Loader from '../components/Loader';
 import {fetchAlbums} from '../reducers/albumSlice';
 import {windowHeight, windowWidth} from '../utils/responsive';
-import TrackPlayer, {Capability} from 'react-native-track-player';
+import TrackPlayer, {
+  Capability,
+  usePlaybackState,
+} from 'react-native-track-player';
 
 const Home = () => {
   const {albums, error, offset} = useSelector(state => state.albums);

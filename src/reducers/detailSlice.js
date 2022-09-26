@@ -47,6 +47,7 @@ export const fetchAlbumDetails = createAsyncThunk(
       );
       return await response.data.tracks;
     } catch (error) {
+      console.log(error)
       return rejectWithValue({error: error.message});
     }
   },

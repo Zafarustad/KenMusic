@@ -9,6 +9,7 @@ import Loader from '../components/Loader';
 import {clearTracks} from '../reducers/detailSlice';
 import TrackCard from '../components/TrackCard';
 import {addTracks} from '../reducers/playerSlice';
+import Error from '../components/Error';
 
 const Details = () => {
   const {tracks, error} = useSelector(state => state.details);
@@ -36,7 +37,7 @@ const Details = () => {
     }
   };
 
-  const onTrackSelect = id => {
+  const onTrackSelect = trackId => {
     let playerTracks = tracks.map(track => ({
       id: track.id,
       url: track.previewURL,
@@ -46,7 +47,7 @@ const Details = () => {
       duration: 30,
     }));
     dispatch(addTracks(playerTracks));
-    navigation.navigate('Player', {id});
+    navigation.navigate('Player', {id: trackId, albumId: id});
   };
 
   const renderItem = ({item, index}) => (
@@ -57,6 +58,7 @@ const Details = () => {
       onTrackSelect={onTrackSelect}
     />
   );
+  console.log('error', tracks, error);
 
   return (
     <View style={styles.container}>
@@ -69,24 +71,20 @@ const Details = () => {
       <Text style={styles.trackCount}>Track Count: {trackCount}</Text>
       <View style={{marginTop: 20, marginHorizontal: 20}}>
         <Text style={styles.trackTxt}>Tracks</Text>
-        {tracks ? (
+        {!tracks && !error ? (
+          <Loader />
+        ) : error ? (
+          <Error />
+        ) : (
           <FlatList
             data={tracks}
             keyExtractor={item => item.id}
             removeClippedSubviews={true}
             renderItem={renderItem}
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingBottom: 430,
-            }}
+            contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}
           />
-        ) : !tracks && !error ? (
-          <Loader />
-        ) : error ? (
-          <Error />
-        ) : null}
+        )}
       </View>
     </View>
   );
@@ -106,6 +104,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
+  },
+  listContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 430,
   },
   trackCount: {
     textAlign: 'center',
