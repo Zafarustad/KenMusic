@@ -43,7 +43,7 @@ export const fetchAlbumDetails = createAsyncThunk(
   async (id, {rejectWithValue}) => {
     try {
       const response = await axiosInstance.get(
-        `http://api.napster.com/v2.2/albums/${id}/tracks?apikey=${Config.NAPSTER_API_KEY}`,
+        `albums/${id}/tracks?apikey=${Config.NAPSTER_API_KEY}`,
       );
       return await response.data.tracks;
     } catch (error) {
